@@ -131,4 +131,4 @@
 - Authentication secrets  
 
 ### Live demo
-[- *Add deployed link here*](https://mistartup-navigator-nek8.bolt.host/)
+[- *MIStartup Navigator*](https://mistartup-navigator-nek8.bolt.host/)
