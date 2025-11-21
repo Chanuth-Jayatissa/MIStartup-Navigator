@@ -107,7 +107,7 @@ export function Onboarding() {
 
   const handleFinish = async () => {
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const objectToStore = { ...data, onboarding_completed: true } as Record<string, any>;
     const serialized = serializeOnboardingData(objectToStore);
@@ -118,7 +118,7 @@ export function Onboarding() {
     // Store serialized string for AI grant matching
     localStorage.setItem('userProfileSerialized', serialized);
 
-    navigate('/dashboard');
+    navigate('/ai-loading');
   };
 
   return (
