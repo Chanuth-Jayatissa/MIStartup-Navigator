@@ -37,7 +37,6 @@
   - Hosts a fine-tuned Llama model.
   - Processes the onboarding text block.
   - Returns structured JSON that powers grant matching, investor matching, roadmap generation, and founder classification.
-- watsonx.ai is the **only IBM product** used.
 
 ---
 
