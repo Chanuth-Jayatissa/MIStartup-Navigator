@@ -49,6 +49,9 @@ export interface Investor {
   thesis: string;
   michiganPortfolioCount: number;
   saved: boolean;
+  // AI matching fields
+  aiMatched?: boolean;
+  matchReasons?: string[];
 }
 
 export interface RoadmapTask {

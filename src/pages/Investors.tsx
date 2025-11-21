@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LoggedInNav } from '../components/LoggedInNav';
-import { Search, Filter, Bookmark, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Filter, Bookmark, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { mockInvestors } from '../data/mockInvestors';
+import { matchInvestorsToProfile, getTopInvestorMatches } from '../services/investorMatcher';
 
 export function Investors() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -9,6 +10,20 @@ export function Investors() {
   const [expandedInvestor, setExpandedInvestor] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [savedInvestors, setSavedInvestors] = useState<Set<string>>(new Set());
+  const [matchedInvestors, setMatchedInvestors] = useState<any[]>([]);
+  const [topMatches, setTopMatches] = useState<any[]>([]);
+
+  // Run AI matching on component mount
+  useEffect(() => {
+    const userProfileString = localStorage.getItem('userProfileSerialized');
+    if (userProfileString) {
+      const matched = matchInvestorsToProfile(mockInvestors, userProfileString);
+      setMatchedInvestors(matched);
+      setTopMatches(getTopInvestorMatches(matched));
+    } else {
+      setMatchedInvestors(mockInvestors);
+    }
+  }, []);
 
   const toggleSaved = (id: string) => {
     setSavedInvestors(prev => {
@@ -22,13 +37,16 @@ export function Investors() {
     });
   };
 
-  const filteredInvestors = mockInvestors.filter(investor => {
+  const investorsToUse = matchedInvestors.length > 0 ? matchedInvestors : mockInvestors;
+
+  const filteredInvestors = investorsToUse.filter(investor => {
     const matchesSearch = investor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      investor.thesis.toLowerCase().includes(searchQuery.toLowerCase());
+      investor.thesis.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      investor.sectors.some((sector: string) => sector.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesTab =
       selectedTab === 'all' ||
-      (selectedTab === 'high-match' && investor.matchLevel >= 85) ||
+      (selectedTab === 'high-match' && investor.aiMatched) ||
       (selectedTab === 'saved' && savedInvestors.has(investor.id));
 
     return matchesSearch && matchesTab;
@@ -143,9 +161,17 @@ export function Investors() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-bold text-gray-900">{investor.name}</h3>
-                          <span className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full font-medium">
-                            {investor.matchLevel}% match
-                          </span>
+                          {investor.aiMatched && (
+                            <div className="flex items-center space-x-1 px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full font-medium">
+                              <Sparkles className="h-4 w-4" />
+                              <span>AI Recommended</span>
+                            </div>
+                          )}
+                          {investor.matchLevel !== undefined && investor.matchLevel > 0 && (
+                            <span className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full font-medium">
+                              {investor.matchLevel}% match
+                            </span>
+                          )}
                         </div>
                         <p className="text-gray-600 mb-3">{investor.type}</p>
                         <p className="text-gray-700 mb-4">{investor.thesis}</p>

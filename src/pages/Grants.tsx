@@ -170,7 +170,7 @@ export function Grants() {
                           {grant.aiMatched && (
                             <div className="flex items-center space-x-1 px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full font-medium">
                               <Sparkles className="h-4 w-4" />
-                              <span>AI Match</span>
+                              <span>AI Recommended</span>
                             </div>
                           )}
                           {grant.matchLevel !== undefined && grant.matchLevel > 0 && (

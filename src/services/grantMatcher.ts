@@ -173,7 +173,7 @@ export function matchGrantsToProfile(grants: Grant[], userProfileString: string)
 
       return {
         ...grant,
-        matchLevel: Math.min(100, score), // Cap at 100
+        matchLevel: Math.min(92, Math.round(score * 0.85)), // Scale down and cap at 92
         aiMatched: score >= 70, // Consider it an AI match if score is 70+
         matchReasons: reasons
       };
