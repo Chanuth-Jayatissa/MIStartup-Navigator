@@ -40,6 +40,19 @@ const initialData: OnboardingData = {
   challenges: []
 };
 
+// Serialize onboarding data to a single string: "key: value, key: value, ..."
+const serializeOnboardingData = (d: OnboardingData | Record<string, any>): string => {
+  return Object.entries(d)
+    .map(([k, v]) => {
+      if (Array.isArray(v)) {
+        return `${k}: ${v.join('; ')}`;
+      }
+      if (v === null || v === undefined) return `${k}: `;
+      return `${k}: ${String(v)}`;
+    })
+    .join(', ');
+};
+
 export function Onboarding() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<OnboardingData>(initialData);
@@ -96,10 +109,11 @@ export function Onboarding() {
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    localStorage.setItem('userProfile', JSON.stringify({
-      ...data,
-      onboarding_completed: true
-    }));
+    const objectToStore = { ...data, onboarding_completed: true } as Record<string, any>;
+    const serialized = serializeOnboardingData(objectToStore);
+
+    // Keep existing JSON storage unchanged (app behavior).
+    localStorage.setItem('userProfile', JSON.stringify(objectToStore));
 
     navigate('/dashboard');
   };
