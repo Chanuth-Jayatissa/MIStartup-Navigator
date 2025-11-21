@@ -115,6 +115,27 @@ export function Onboarding() {
     // Keep existing JSON storage unchanged (app behavior).
     localStorage.setItem('userProfile', JSON.stringify(objectToStore));
 
+    try {
+      const response = await fetch('http://localhost:8000/onboarding', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: serialized }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Onboarding data posted successfully:', result);
+    } catch (error) {
+      console.error('Error posting onboarding data:', error);
+      // Continue navigation even if API call fails
+    }
+
+    setLoading(false);
     navigate('/dashboard');
   };
 
