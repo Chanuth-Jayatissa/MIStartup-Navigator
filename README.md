@@ -109,7 +109,7 @@
 - Build multi-founder collaboration  
 
 ### Roadmap
-- To be added after submission.
+![Roadmap](./roadmap.png)
 
 ---
 
@@ -131,4 +131,4 @@
 - Authentication secrets  
 
 ### Live demo
-[- *MIStartup Navigator*](https://mistartup-navigator-nek8.bolt.host/)
+[*MIStartup Navigator*](https://mistartup-navigator-nek8.bolt.host/)
