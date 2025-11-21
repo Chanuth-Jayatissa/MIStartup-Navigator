@@ -109,7 +109,7 @@
 - Build multi-founder collaboration  
 
 ### Roadmap
-![Roadmap](./roadmap.png)
+![Roadmap](./roadmap.jpg)
 
 ---
 
