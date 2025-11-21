@@ -22,18 +22,19 @@ export interface Profile {
 
 export interface Grant {
   id: string;
-  name: string;
   organization: string;
+  description: string;
   type: string;
-  stageFit: string[];
   region: string;
   amount: string;
   deadline: string;
-  status: 'open' | 'closing_soon' | 'upcoming';
-  matchLevel: number;
-  description: string;
   eligibility: string[];
-  saved: boolean;
+  bookmarkable: boolean;
+  tags: string[];
+  // Computed fields for UI
+  matchLevel?: number;
+  aiMatched?: boolean;
+  saved?: boolean;
 }
 
 export interface Investor {

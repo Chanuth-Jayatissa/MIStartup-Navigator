@@ -115,6 +115,9 @@ export function Onboarding() {
     // Keep existing JSON storage unchanged (app behavior).
     localStorage.setItem('userProfile', JSON.stringify(objectToStore));
 
+    // Store serialized string for AI grant matching
+    localStorage.setItem('userProfileSerialized', serialized);
+
     navigate('/dashboard');
   };
 

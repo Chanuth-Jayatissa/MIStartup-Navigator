@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LoggedInNav } from '../components/LoggedInNav';
-import { Search, Filter, Bookmark, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Filter, Bookmark, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { mockGrants } from '../data/mockGrants';
 import { Grant } from '../types';
+import { matchGrantsToProfile, getTopMatches } from '../services/grantMatcher';
 
 export function Grants() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +17,20 @@ export function Grants() {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [savedGrants, setSavedGrants] = useState<Set<string>>(new Set());
+  const [matchedGrants, setMatchedGrants] = useState<Grant[]>([]);
+  const [topMatches, setTopMatches] = useState<Grant[]>([]);
+
+  // Run AI matching on component mount
+  useEffect(() => {
+    const userProfileString = localStorage.getItem('userProfileSerialized');
+    if (userProfileString) {
+      const matched = matchGrantsToProfile(mockGrants, userProfileString);
+      setMatchedGrants(matched);
+      setTopMatches(getTopMatches(matched));
+    } else {
+      setMatchedGrants(mockGrants);
+    }
+  }, []);
 
   const toggleSaved = (id: string) => {
     setSavedGrants(prev => {
@@ -29,13 +44,16 @@ export function Grants() {
     });
   };
 
-  const filteredGrants = mockGrants.filter(grant => {
-    const matchesSearch = grant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      grant.description.toLowerCase().includes(searchQuery.toLowerCase());
+  const grantsToUse = matchedGrants.length > 0 ? matchedGrants : mockGrants;
+
+  const filteredGrants = grantsToUse.filter(grant => {
+    const matchesSearch = grant.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      grant.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      grant.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesTab =
       selectedTab === 'all' ||
-      (selectedTab === 'high-match' && grant.matchLevel >= 85) ||
+      (selectedTab === 'high-match' && grant.aiMatched) ||
       (selectedTab === 'saved' && savedGrants.has(grant.id));
 
     return matchesSearch && matchesTab;
@@ -148,17 +166,20 @@ export function Grants() {
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="text-lg font-bold text-gray-900">{grant.name}</h3>
-                          <span className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full font-medium">
-                            {grant.matchLevel}% match
-                          </span>
-                          {grant.status === 'closing_soon' && (
-                            <span className="px-3 py-1 bg-orange-100 text-orange-700 text-sm rounded-full font-medium">
-                              Closing soon
+                          <h3 className="text-lg font-bold text-gray-900">{grant.organization}</h3>
+                          {grant.aiMatched && (
+                            <div className="flex items-center space-x-1 px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full font-medium">
+                              <Sparkles className="h-4 w-4" />
+                              <span>AI Match</span>
+                            </div>
+                          )}
+                          {grant.matchLevel !== undefined && grant.matchLevel > 0 && (
+                            <span className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full font-medium">
+                              {grant.matchLevel}% match
                             </span>
                           )}
                         </div>
-                        <p className="text-gray-600 mb-3">{grant.organization}</p>
+                        <p className="text-gray-600 mb-3 text-sm font-medium">{grant.type}</p>
                         <p className="text-gray-700 mb-4">{grant.description}</p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
@@ -174,6 +195,11 @@ export function Grants() {
                           <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                             Due: {grant.deadline}
                           </span>
+                          {grant.tags.slice(0, 3).map((tag, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-indigo-50 text-indigo-700 text-sm rounded-full">
+                              {tag}
+                            </span>
+                          ))}
                         </div>
 
                         {expandedGrant === grant.id && (
