@@ -83,7 +83,7 @@
 ---
 
 ### Presentation materials
-- Solution demo video: *Add link here*
+  - Solution demo video: [➡️ Launch MIStartup Navigator](https://mistartup-navigator-nek8.bolt.host/)
 
 ---
 
