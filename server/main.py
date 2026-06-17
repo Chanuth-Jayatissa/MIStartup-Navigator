@@ -29,7 +29,13 @@ def read_root():
 @app.post("/onboarding")
 def onboarding(request: OnboardingRequest):
     try:
-        API_KEY = "RVUxmsPhrw0q5ke_k92_spi7rx3lAfcTavT3hUT7LqN5"
+        API_KEY = os.getenv("WATSONX_API_KEY")
+        if not API_KEY:
+            return {
+                "message": "Missing watsonx.ai API key",
+                "error": "Set WATSONX_API_KEY in the backend environment.",
+            }
+
         token_response = requests.post('https://iam.cloud.ibm.com/identity/token', data={"apikey": API_KEY, "grant_type": 'urn:ibm:params:oauth:grant-type:apikey'})
         mltoken = token_response.json()["access_token"]
 

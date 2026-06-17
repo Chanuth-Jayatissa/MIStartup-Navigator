@@ -1,134 +1,65 @@
-### MIStartup Navigator
+# MIStartup Navigator
 
-### Project summary
-- MIStartup Navigator is an AI-powered platform that helps Michigan startup founders discover relevant grants, investors, and next-step recommendations.
-- The platform uses a fine-tuned Llama model on watsonx.ai to analyze onboarding data and generate a personalized roadmap.
+MIStartup Navigator is an AI-powered platform that helps Michigan startup founders discover relevant grants, investors, and next-step recommendations. Founders complete onboarding, and the app turns that information into structured guidance using a FastAPI backend and watsonx.ai-powered Llama workflow.
 
-### The issue we are hoping to solve
-- Michigan founders struggle with a fragmented ecosystem of grants, investors, and entrepreneurial support.
-- Information is scattered across agencies and websites, making it especially difficult for first-time and underrepresented founders.
+Live demo: https://mistartup-navigator-nek8.bolt.host/
 
-### How our technology solution can help
-- AI-powered personalized guidance for Michigan founders.
+## Features
 
-### Our idea
-- MIStartup Navigator centralizes Michigan entrepreneurial resources into one personalized hub.
-- Founders complete onboarding covering stage, traction, goals, challenges, and sector.
-- All onboarding responses are merged into one text block and sent to a fine-tuned Llama model on watsonx.ai.
-- The model returns structured JSON including:
-  - Stage classification  
-  - Sector classification  
-  - Goals and challenges  
-  - Recommended grant categories  
-  - Recommended investor types  
-  - Roadmap themes  
-- The frontend uses the JSON to:
-  - Rank relevant Michigan grants  
-  - Suggest aligned investors  
-  - Generate an AI-based roadmap  
-  - Personalize dashboard and profile insights  
+- Founder onboarding flow for stage, traction, goals, challenges, and sector.
+- AI-generated founder classification and roadmap themes.
+- Grant matching and investor matching for Michigan startup resources.
+- Personalized dashboard, roadmap, profile, grant, and investor pages.
+- FastAPI backend for submitting onboarding data to the model workflow.
+- Mock datasets for grant, investor, and roadmap demos.
 
----
+## Tech Stack
 
-### Technology implementation
+- React 18 and TypeScript
+- Vite
+- FastAPI and Python
+- watsonx.ai / Llama deployment integration
+- Supabase JS integration points
+- Tailwind CSS
 
-### IBM watsonx product(s) used
-- **watsonx.ai**
-  - Hosts a fine-tuned Llama model.
-  - Processes the onboarding text block.
-  - Returns structured JSON that powers grant matching, investor matching, roadmap generation, and founder classification.
+## Project Structure
 
----
+- src/pages - onboarding, dashboard, grants, investors, profile, and roadmap pages
+- src/data - mock grants, investors, and roadmap data
+- server/main.py - FastAPI backend and watsonx.ai request flow
+- server/.env.example - backend environment example
 
-### Application Tech Stack (Frontend)
+## Getting Started
 
-- React 18.3.1  
-- TypeScript 5.9.3  
-- Vite 5.4.21  
-- React Router DOM 7.9.6  
-- Tailwind CSS 3.4.1  
-- PostCSS 8.4.35  
-- Autoprefixer 10.4.18  
-- Lucide React 0.344.0  
-- ESLint / TypeScript ESLint  
-- Vite Plugin React  
-- ES Modules build output via Vite
+Install frontend dependencies and run the app:
 
-### Application Tech Stack (Backend)
-- FastAPI (Python)  
-- Uvicorn  
-- Pydantic  
-- httpx / requests  
-- Backend handles:
-  - Building onboarding text block  
-  - Calling watsonx.ai  
-  - Parsing JSON  
-  - Running matching logic  
-  - Returning structured data to frontend  
+~~~bash
+npm install
+npm run dev
+~~~
 
----
+Install backend dependencies and run the API:
 
-### Solution architecture
-- User completes onboarding in frontend.
-- Frontend compiles responses into one structured text block.
-- FastAPI backend receives the text and sends it to watsonx.ai.
-- Llama model returns structured JSON.
-- Backend processes JSON and performs matching logic.
-- Frontend displays:
-  - Grant matches  
-  - Investor matches  
-  - Roadmap  
-  - Dashboard insights  
+~~~bash
+pip install -r requirements.txt
+uvicorn server.main:app --reload
+~~~
 
----
+Create server/.env from server/.env.example:
 
-### Presentation materials
-  - Solution demo video: [➡️ Launch MIStartup Navigator](https://mistartup-navigator-nek8.bolt.host/)
+~~~bash
+WATSONX_API_KEY=your_watsonx_api_key_here
+~~~
 
----
+## Useful Commands
 
-### Project development roadmap
+~~~bash
+npm run dev
+npm run build
+npm run lint
+npm run typecheck
+~~~
 
-### Currently implemented
-- End-to-end onboarding workflow  
-- FastAPI backend  
-- watsonx.ai Llama model integration  
-- Dashboard with personalized results  
-- Grant finder  
-- Investor finder  
-- Roadmap generation  
-- Profile page  
-- Authentication + protected routes  
-- Mock datasets  
+## Status
 
-### In the future we plan to:
-- Integrate real Michigan grant & investor datasets  
-- Add ecosystem directory  
-- Improve roadmap prompts  
-- Add deadline alerts & notifications  
-- Build multi-founder collaboration  
-
-### Roadmap
-![Roadmap](./roadmap.jpg)
-
----
-
-### Additional details
-
-### How to run the project
-
-#### Frontend
-- `npm install`
-- `npm run dev`
-
-#### Backend
-- `pip install -r requirements.txt`
-- `uvicorn main:app --reload`
-
-#### Environment variables required
-- watsonx.ai credentials  
-- Backend API URL  
-- Authentication secrets  
-
-### Live demo
-[*MIStartup Navigator*](https://mistartup-navigator-nek8.bolt.host/)
+Hackathon/portfolio project with a working frontend flow, FastAPI backend, live demo link, and AI integration path. Future work includes replacing mock ecosystem datasets with live Michigan startup resource data.
